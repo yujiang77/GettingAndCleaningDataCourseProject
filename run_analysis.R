@@ -5,7 +5,7 @@
 ## 3. Uses descriptive activity names to name the activities in the data set
 ## 4. Appropriately labels the data set with descriptive variable names.
 ## 5. From the data set in step 4, creates a second, independent tidy data set with the average- 
-##    of each variable for each activity and each subject.
+## of each variable for each activity and each subject.
 library(tidyverse)
 
 ## the path of data
@@ -55,7 +55,19 @@ dt_selected <- inner_join(dt_selected, dt_activity_label)
 
 names(dt_selected)<-gsub("^t", "time", names(dt_selected))
 names(dt_selected)<-gsub("^f", "frequency", names(dt_selected))
-names(dt_selected)<-gsub("Acc", "Accelerometer", names(dt_selected))
-names(dt_selected)<-gsub("Gyro", "Gyroscope", names(dt_selected))
-names(dt_selected)<-gsub("Mag", "Magnitude", names(dt_selected))
-names(dt_selected)<-gsub("BodyBody", "Body", names(dt_selected))
+names(dt_selected)<-gsub("Acc", "accelerometer", names(dt_selected))
+names(dt_selected)<-gsub("Gyro", "gyroscope", names(dt_selected))
+names(dt_selected)<-gsub("Mag", "magnitude", names(dt_selected))
+names(dt_selected)<-gsub("BodyBody", "body", names(dt_selected))
+
+## From the data set in step 4, 
+## creates a second, independent tidy data set with the average 
+## of each variable for each activity and each subject.
+dt_tidy <- dt_selected %>% 
+                group_by(subject,activity) %>%
+                summarise_all(funs(mean))
+
+
+## Save the tidy dataset and the mean tidy data into separate files.
+write_csv(dt_tidy,"tidy_dataset_mean.csv")
+write_csv(dt_selected,"tidy_dataset.csv")
